@@ -81,7 +81,7 @@ func fromremoteS3() string {
 	endpoint := brf.Creds.StorageTargetEndpoint
 	accessKeyID, secretAccessKey := extractS3cred()
 	useSSL := true
-	bucket := brf.InfraService + "-backup"
+	bucket := brf.BucketName
 	object := snapshotid
 
 	log.WithFields(log.Fields{"func": "fromremoteS3"}).Debug(fmt.Sprintf("Trying to retrieve %s/%s from S3 compatible remote storage", bucket, object))

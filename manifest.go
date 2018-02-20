@@ -17,6 +17,7 @@ import (
 // burry manifest file (.burryfest)
 type Burryfest struct {
 	InfraService  string      `json:"svc"`
+	BucketName    string      `json:"svc-bucket"`
 	Endpoint      string      `json:"svc-endpoint"`
 	StorageTarget string      `json:"target"`
 	Creds         Credentials `json:"credentials"`
@@ -41,6 +42,7 @@ type CredParams struct {
 type ArchMeta struct {
 	SnapshotDate          string `json:"snapshot-date"`
 	InfraService          string `json:"svc"`
+	BucketName            string `json:"svc-bucket"`
 	Endpoint              string `json:"svc-endpoint"`
 	StorageTarget         string `json:"target"`
 	StorageTargetEndpoint string `json:"target-endpoint"`
@@ -143,6 +145,7 @@ func addmeta(dst string) error {
 	m := ArchMeta{
 		SnapshotDate:          time.Unix(basedi64, 0).Format(time.RFC3339),
 		InfraService:          brf.InfraService,
+		BucketName:          	 brf.BucketName,
 		Endpoint:              brf.Endpoint,
 		StorageTarget:         brf.StorageTarget,
 		StorageTargetEndpoint: step,
