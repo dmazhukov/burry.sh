@@ -40,6 +40,7 @@ var (
 	bops = [...]string{BURRY_OPERATION_BACKUP, BURRY_OPERATION_RESTORE}
 	// the type of infra service to back up or restore:
 	isvc  string
+	bn string
 	isvcs = [...]string{INFRA_SERVICE_ZK, INFRA_SERVICE_ETCD, INFRA_SERVICE_CONSUL}
 	// the infra service endpoint to use:
 	endpoint string
@@ -76,6 +77,7 @@ func init() {
 	flag.BoolVarP(&createburryfest, "burryfest", "b", false, fmt.Sprintf("Create a burry manifest file %s in the current directory.\n\tThe manifest file captures the current command line parameters for re-use in subsequent operations.", BURRYFEST_FILE))
 	flag.StringVarP(&bop, "operation", "o", BURRY_OPERATION_BACKUP, fmt.Sprintf("The operation to carry out.\n\tSupported values are %v", bops))
 	flag.StringVarP(&isvc, "isvc", "i", INFRA_SERVICE_ZK, fmt.Sprintf("The type of infra service to back up or restore.\n\tSupported values are %v", isvcs))
+	flag.StringVarP(&bn, "bn", "b", INFRA_SERVICE_ZK+"-bucket", fmt.Sprintf("The bucket name.  Defaults to %s-bucket", INFRA_SERVICE_ZK));
 	flag.StringVarP(&endpoint, "endpoint", "e", "", fmt.Sprintf("The infra service HTTP API endpoint to use.\n\tExample: localhost:8181 for Exhibitor"))
 	flag.StringVarP(&starget, "target", "t", STORAGE_TARGET_TTY, fmt.Sprintf("The storage target to use.\n\tSupported values are %v", startgets))
 	flag.StringVarP(&cred, "credentials", "c", "", fmt.Sprintf("The credentials to use in format STORAGE_TARGET_ENDPOINT,KEY1=VAL1,...KEYn=VALn.\n\tExample: s3.amazonaws.com,ACCESS_KEY_ID=...,SECRET_ACCESS_KEY=..."))
@@ -93,7 +95,7 @@ func init() {
 	}
 
 	if bfpath, mbrf, err := loadbf(); err != nil {
-		brf = Burryfest{InfraService: isvc, Endpoint: endpoint, StorageTarget: starget, Creds: parsecred()}
+		brf = Burryfest{InfraService: isvc, BucketName: bn, Endpoint: endpoint, StorageTarget: starget, Creds: parsecred()}
 	} else {
 		brf = mbrf
 		log.WithFields(log.Fields{"func": "init"}).Info(fmt.Sprintf("Using burryfest %s", bfpath))
