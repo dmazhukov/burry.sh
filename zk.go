@@ -23,9 +23,13 @@ func backupZK() bool {
 	visitZK("/", reapsimple)
 	if lookupst(brf.StorageTarget) > 0 { // non-TTY, actual storage
 		// create an archive file of the node's values:
-		a := arch()
+		a := arch(based)
 		// transfer to remote, if applicable:
 		toremote(a)
+		if marksnap != "" {
+			a := arch(marksnap)
+			toremote(a)
+		}
 	}
 	return true
 }

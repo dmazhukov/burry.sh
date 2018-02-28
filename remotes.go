@@ -54,13 +54,6 @@ func toremoteS3(localarch string) {
 		} else {
 			log.WithFields(log.Fields{"func": "toremoteS3"}).Info(fmt.Sprintf("Successfully stored %s/%s (%d Bytes) in S3 compatible remote storage %s", bucket, object, nbytes, endpoint))
 		}
-		if marksnap != "" {
-			if nbytes, err := mc.FPutObject(bucket, marksnap, localarch, REMOTE_ARCH_TYPE); err != nil {
-				log.WithFields(log.Fields{"func": "toremoteS3"}).Fatal(fmt.Sprintf("%s", err))
-			} else {
-				log.WithFields(log.Fields{"func": "toremoteS3"}).Info(fmt.Sprintf("Successfully stored %s/%s (%d Bytes) in S3 compatible remote storage %s", bucket, object, nbytes, endpoint))
-			}
-		}
 	}
 }
 

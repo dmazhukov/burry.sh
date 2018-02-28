@@ -27,7 +27,7 @@ func backupCONSUL() bool {
 	visitCONSUL("/", reapsimple)
 	if lookupst(brf.StorageTarget) > 0 { // non-TTY, actual storage
 		// create an archive file of the node's values:
-		res := arch()
+		res := arch(based)
 		// transfer to remote, if applicable:
 		toremote(res)
 	}

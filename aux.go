@@ -41,7 +41,10 @@ func reapsimple(path string, val string) {
 		log.WithFields(log.Fields{"func": "reapsimple"}).Info(fmt.Sprintf("%s", path))
 		log.WithFields(log.Fields{"func": "reapsimple"}).Debug(fmt.Sprintf("%v", val))
 	case stidx >= 1: // some kind of actual storage
-		store(path, val)
+		store(path, val, based)
+		if marksnap != "" {
+			store(path, val, marksnap)
+		}
 	default:
 		log.WithFields(log.Fields{"func": "reapsimple"}).Fatal(fmt.Sprintf("Storage target %s unknown or not yet supported", brf.StorageTarget))
 	}
@@ -49,15 +52,15 @@ func reapsimple(path string, val string) {
 
 // store stores value val at path path
 // in the local filesystem
-func store(path string, val string) {
+func store(path string, val string, folder string) {
 	cwd, _ := os.Getwd()
 	fpath := ""
 	if path == "/" {
 		log.WithFields(log.Fields{"func": "store"}).Info(fmt.Sprintf("Rewriting root"))
-		fpath, _ = filepath.Abs(filepath.Join(cwd, based))
+		fpath, _ = filepath.Abs(filepath.Join(cwd, folder))
 	} else {
 		// escape ":" in the path so that we have no issues storing it in the filesystem:
-		fpath, _ = filepath.Abs(filepath.Join(cwd, based, strings.Replace(path, ":", "BURRY_ESC_COLON", -1)))
+		fpath, _ = filepath.Abs(filepath.Join(cwd, folder, strings.Replace(path, ":", "BURRY_ESC_COLON", -1)))
 	}
 	if err := os.MkdirAll(fpath, os.ModePerm); err != nil {
 		log.WithFields(log.Fields{"func": "store"}).Error(fmt.Sprintf("%s", err))
@@ -78,13 +81,13 @@ func store(path string, val string) {
 }
 
 // arch creates a ZIP archive of snapshot that store() has generated
-func arch() string {
+func arch(folder string) string {
 	defer func() {
-		_ = os.RemoveAll(based)
+		_ = os.RemoveAll(folder)
 	}()
 	cwd, _ := os.Getwd()
-	opath := filepath.Join(cwd, based+".zip")
-	ipath := filepath.Join(cwd, based, "/")
+	opath := filepath.Join(cwd, folder+".zip")
+	ipath := filepath.Join(cwd, folder, "/")
 	progress := func(apath string) {
 		log.WithFields(log.Fields{"func": "arch"}).Debug(fmt.Sprintf("%s", apath))
 	}
