@@ -37,10 +37,10 @@ func toremoteS3(localarch string) {
 	object := strings.TrimSuffix(f, filepath.Ext(f))
 
 	log.WithFields(log.Fields{"func": "toremoteS3"}).Debug(fmt.Sprintf("Trying to back up to %s/%s in S3 compatible remote storage", bucket, object))
-	if mc, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL); err != nil {
+	if mc, err := minio.NewV2(endpoint, accessKeyID, secretAccessKey, useSSL); err != nil {
 		log.WithFields(log.Fields{"func": "toremoteS3"}).Fatal(fmt.Sprintf("%s ", err))
 	} else {
-		location := "us-west-2"
+		location := "regionOne"
 		if err = mc.MakeBucket(bucket, location); err != nil {
 			exists, err := mc.BucketExists(bucket)
 			if err == nil && exists {
